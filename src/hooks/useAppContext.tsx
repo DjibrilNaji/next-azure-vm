@@ -1,17 +1,20 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { User } from "@/app/models/User";
+import React, { createContext, useContext, useState } from "react";
 
 const AppContext = createContext<AppContextType>(null);
 
 type AppContextType = {
-  test: string;
+  userLogged: User | null;
+  setUserConnected: React.Dispatch<React.SetStateAction<User>>;
 } | null;
 
 export default function AppAuth({ children }: { children: React.ReactNode }) {
-  const [test, setTest] = useState("Hello");
+  const [userLogged, setUserConnected] = useState<User>(null);
 
   const AppContextValue: AppContextType = {
-    test,
+    userLogged,
+    setUserConnected,
   };
 
   return (
