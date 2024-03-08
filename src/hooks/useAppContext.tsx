@@ -1,20 +1,24 @@
 "use client";
-import { User } from "@/app/models/User";
 import React, { createContext, useContext, useState } from "react";
 
 const AppContext = createContext<AppContextType>(null);
 
 type AppContextType = {
-  userLogged: User | null;
-  setUserConnected: React.Dispatch<React.SetStateAction<User>>;
+  isDialogOpen: boolean;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  contentDialog: string;
+  setContentDialog: React.Dispatch<React.SetStateAction<string>>;
 } | null;
 
 export default function AppAuth({ children }: { children: React.ReactNode }) {
-  const [userLogged, setUserConnected] = useState<User>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [contentDialog, setContentDialog] = useState<string>("");
 
   const AppContextValue: AppContextType = {
-    userLogged,
-    setUserConnected,
+    isDialogOpen,
+    setIsDialogOpen,
+    contentDialog,
+    setContentDialog,
   };
 
   return (

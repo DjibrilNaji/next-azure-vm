@@ -1,41 +1,29 @@
-"use client";
-
-import { useAppContext } from "@/hooks/useAppContext";
+import { getToken, getUserByToken } from "@/services/connection";
 import { redirect } from "next/navigation";
-import { CiLogout } from "react-icons/ci";
-import { roles } from "../utils/roles";
+import Logout from "../components/Logout";
+import StartVM from "../components/StartVM";
+import { routes } from "../utils/routes";
 
-export default function Admin() {
-  const { userLogged, setUserConnected } = useAppContext();
+export default async function Admin() {
+  const token = await getToken();
 
-  if (!userLogged) {
-    redirect("/login");
+  if (!token) {
+    redirect(routes.home());
   }
 
-  return (
-    <div className="p-8 rounded-md">
-      {roles.ADMIN === userLogged?.role && (
-        <p className="text-white">
-          Bienvenue {userLogged?.username}, tu es {userLogged?.role} !
-        </p>
-      )}
-      {roles.EDITOR === userLogged?.role && (
-        <p className="text-white">
-          Bienvenue {userLogged?.username}, tu es {userLogged?.role} !
-        </p>
-      )}
-      {roles.VIEWER === userLogged?.role && (
-        <p className="text-white">
-          Bienvenue {userLogged?.username}, tu es {userLogged?.role} !
-        </p>
-      )}
+  const user = await getUserByToken();
 
-      <button
-        className="bg-red-500 text-white px-4 py-2 mt-4 rounded-md hover:bg-red-600 transition duration-300"
-        onClick={() => setUserConnected(null)}
-      >
-        <CiLogout />
-      </button>
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex justify-between items-center p-8 rounded-md gap-4">
+        <h1 className="text-white font-bold text-xl">
+          Bienvenue {user?.username}, tu es {user?.role} !
+        </h1>
+
+        <Logout />
+      </div>
+
+      <StartVM />
     </div>
   );
 }

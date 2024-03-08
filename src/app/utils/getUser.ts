@@ -8,8 +8,9 @@ export async function getUser(
   const user = users.find(
     (u: User) => u?.username === username && u?.password === password
   );
+
   if (!user) {
-    throw new Error("Utilisateur non trouvé");
+    throw new Error("Le nom d'utilisateur ou le mot de passe est incorrect.");
   }
   return user;
 }
