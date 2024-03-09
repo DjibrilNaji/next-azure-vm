@@ -36,10 +36,6 @@ export async function checkAuth() {
   }
 }
 
-export async function getToken() {
-  return JSON.stringify(cookies().get("token"));
-}
-
 export async function getUserByToken() {
   const token = cookies().get("token");
 

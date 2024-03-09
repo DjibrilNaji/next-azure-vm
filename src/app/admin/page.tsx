@@ -1,8 +1,9 @@
-import { getToken, getUserByToken } from "@/services/connection";
+import Logout from "@/app/components/Auth/Logout";
+import StartVM from "@/app/components/StartVM";
+import { getToken } from "@/app/utils/jwt";
+import { routes } from "@/app/utils/routes";
+import { getUserByToken } from "@/services/connection";
 import { redirect } from "next/navigation";
-import Logout from "../components/Logout";
-import StartVM from "../components/StartVM";
-import { routes } from "../utils/routes";
 
 export default async function Admin() {
   const token = await getToken();

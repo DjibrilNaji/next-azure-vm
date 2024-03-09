@@ -3,8 +3,8 @@ import { useAppContext } from "@/hooks/useAppContext";
 import { connection } from "@/services/connection";
 import { useState } from "react";
 
-export default function Form() {
-  const { setIsDialogOpen, setContentDialog } = useAppContext();
+export default function LoginForm() {
+  const { setDialog } = useAppContext();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,13 +13,7 @@ export default function Form() {
     try {
       await connection(username, password);
       setError("");
-      setIsDialogOpen(true);
-      setContentDialog("Connexion réussie !");
-
-      setTimeout(() => {
-        setIsDialogOpen(false);
-        setContentDialog("");
-      }, 5000);
+      setDialog("Connexion réussie !");
     } catch (error: any) {
       setError(error.message);
     }
