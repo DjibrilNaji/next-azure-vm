@@ -1,9 +1,10 @@
 "use server";
 import { getUser } from "@/app/utils/getUser";
-import { generateToken, verifyToken } from "@/app/utils/jwt";
+import { generateToken } from "@/app/utils/jwt";
 import { routes } from "@/app/utils/routes";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { createVm } from "./manage-vm";
 
 export async function connection(username: string, password: string) {
   const user = await getUser(username, password);
@@ -16,7 +17,7 @@ export async function connection(username: string, password: string) {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 1);
 
-    cookies().set("token", token, { expires: expirationDate });
+    cookies().set("token", token);
     redirect(routes.admin());
   } else {
     throw new Error("Nom d'utilisateur ou mot de passe incorrect.");
@@ -24,7 +25,8 @@ export async function connection(username: string, password: string) {
 }
 
 export async function logout() {
-  cookies().delete("token");
+  deleteCookie("token");
+  deleteCookie("vmAddressToken");
   redirect(routes.home());
 }
 
@@ -36,11 +38,17 @@ export async function checkAuth() {
   }
 }
 
-export async function getUserByToken() {
-  const token = cookies().get("token");
+export async function createCookie(cookieName: string, value: any) {
+  const token = await generateToken(value);
+  cookies().set(cookieName, token);
+}
 
-  if (token) {
-    const user = await verifyToken(token?.value);
-    return user;
-  }
+export async function deleteCookie(cookieName: string) {
+  cookies().delete(cookieName);
+}
+
+export async function createVM() {
+  const vmAddress = await createVm();
+
+  return vmAddress;
 }

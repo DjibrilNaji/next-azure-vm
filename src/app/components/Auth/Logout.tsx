@@ -8,7 +8,7 @@ export default function Logout() {
 
   const handleLogout = async () => {
     await logout();
-    setDialog("Vous êtes bien déconnecté !");
+    setDialog("Vous êtes bien déconnecté !", 3000);
   };
 
   return (

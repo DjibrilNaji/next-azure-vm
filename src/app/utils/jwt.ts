@@ -17,6 +17,18 @@ export const verifyToken = (token: string): any => {
   }
 };
 
-export async function getToken() {
-  return JSON.stringify(cookies().get("token"));
+export async function getToken(cookieName: string) {
+  const token = cookies().get(cookieName);
+  if (token) {
+    return JSON.stringify(cookies().get(cookieName));
+  }
+  return null;
+}
+
+export async function getValueByToken(token: string) {
+  const tokenFetch = cookies().get(token);
+
+  if (tokenFetch) {
+    return await verifyToken(tokenFetch?.value);
+  }
 }

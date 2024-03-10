@@ -3,3 +3,8 @@ export type User = {
   password: string;
   role: string;
 } | null;
+
+export type VmAddressToken = {
+  address?: string;
+  status: string;
+};

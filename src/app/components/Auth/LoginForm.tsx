@@ -13,7 +13,7 @@ export default function LoginForm() {
     try {
       await connection(username, password);
       setError("");
-      setDialog("Connexion réussie !");
+      setDialog("Connexion réussie !", 3000);
     } catch (error: any) {
       setError(error.message);
     }
@@ -21,12 +21,13 @@ export default function LoginForm() {
   return (
     <form className="space-y-4" action={handleSubmit}>
       <div>
-        <label className="block mb-1 text-white">Nom d&apos;utilisateur</label>
+        <label className="block mb-1 text-white">Email</label>
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="w-full px-4 py-2 border rounded-md focus:outline-none"
+          placeholder="Email"
         />
       </div>
       <div className="relative">
@@ -36,6 +37,7 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full px-4 py-2 border rounded-md focus:outline-none"
+          placeholder="Mot de passe"
         />
       </div>
       {error && <p className="text-red-500 mb-4">{error}</p>}
