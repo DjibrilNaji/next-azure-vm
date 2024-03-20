@@ -4,7 +4,7 @@ import { generateToken } from "@/app/utils/jwt";
 import { routes } from "@/app/utils/routes";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createVm } from "./manage-vm";
+import { main } from "./manage-vm";
 
 export async function connection(username: string, password: string) {
   const user = await getUser(username, password);
@@ -14,8 +14,6 @@ export async function connection(username: string, password: string) {
       username: user?.username,
       role: user?.role,
     });
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 1);
 
     cookies().set("token", token);
     redirect(routes.admin());
@@ -47,8 +45,13 @@ export async function deleteCookie(cookieName: string) {
   cookies().delete(cookieName);
 }
 
-export async function createVM() {
-  const vmAddress = await createVm();
+export async function createVM(publisher: string, offer: string, sku: string) {
+  const vmAddress = await main(publisher, offer, sku);
+
+  if (!vmAddress) {
+    await deleteCookie("vmAddressToken");
+    return;
+  }
 
   return vmAddress;
 }

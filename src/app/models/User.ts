@@ -7,4 +7,5 @@ export type User = {
 export type VmAddressToken = {
   address?: string;
   status: string;
+  wds?: boolean;
 };

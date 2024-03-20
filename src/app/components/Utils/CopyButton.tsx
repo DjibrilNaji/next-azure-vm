@@ -13,7 +13,7 @@ export default function CopyButton({
   const copyToClipboard = () => {
     const textToCopy = document.getElementById(id)?.innerText;
     navigator.clipboard.writeText(textToCopy || "").then(() => {
-      setDialog("Copié dans le presse-papier", 3000);
+      setDialog("Copié dans le presse-papier", "green", 3000);
     });
   };
 

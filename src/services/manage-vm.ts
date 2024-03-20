@@ -1,5 +1,4 @@
 "use server";
-import { Os } from "@/app/models/Os";
 import { ComputeManagementClient, VirtualMachine } from "@azure/arm-compute";
 import { NetworkManagementClient } from "@azure/arm-network";
 import { ResourceManagementClient } from "@azure/arm-resources";
@@ -15,25 +14,22 @@ let vmImageInfo: any = null;
 let nicInfo: any = null;
 
 //Random number generator for service names and settings
-const resourceGroupName = _generateRandomId("diberry-testrg", randomIds);
-const vmName = _generateRandomId("testvm", randomIds);
-const storageAccountName = _generateRandomId("testac", randomIds);
-const vnetName = _generateRandomId("testvnet", randomIds);
-const subnetName = _generateRandomId("testsubnet", randomIds);
-const publicIPName = _generateRandomId("testpip", randomIds);
-const networkInterfaceName = _generateRandomId("testnic", randomIds);
-const ipConfigName = _generateRandomId("testcrpip", randomIds);
-const domainNameLabel = _generateRandomId("testdomainname", randomIds);
-const osDiskName = _generateRandomId("testosdisk", randomIds);
+let resourceGroupName = _generateRandomId("diberry-testrg", randomIds);
+let vmName = _generateRandomId("testvm", randomIds);
+let storageAccountName = _generateRandomId("testac", randomIds);
+let vnetName = _generateRandomId("testvnet", randomIds);
+let subnetName = _generateRandomId("testsubnet", randomIds);
+let publicIPName = _generateRandomId("testpip", randomIds);
+let networkInterfaceName = _generateRandomId("testnic", randomIds);
+let ipConfigName = _generateRandomId("testcrpip", randomIds);
+let domainNameLabel = _generateRandomId("testdomainname", randomIds);
+let osDiskName = _generateRandomId("testosdisk", randomIds);
 
 // Resource configs
 const location = "eastus";
 const accType = "Standard_LRS";
 
 // Ubuntu config for VM
-const publisher = "Canonical";
-const offer = "UbuntuServer";
-const sku = "14.04.3-LTS";
 const adminUsername = "notadmin";
 const adminPassword = "Pa$$w0rd92";
 
@@ -44,7 +40,6 @@ const adminPassword = "Pa$$w0rd92";
 const subscriptionId = process.env.AZURE_SUBSCRIPTION_ID;
 
 if (!subscriptionId) {
-  console.log(subscriptionId);
   throw new Error("Default credentials couldn't be found");
 }
 
@@ -59,37 +54,64 @@ const computeClient = new ComputeManagementClient(credentials, subscriptionId);
 const storageClient = new StorageManagementClient(credentials, subscriptionId);
 const networkClient = new NetworkManagementClient(credentials, subscriptionId);
 
-// Create resources then manage them (on/off)
-export const main = async (os?: Os | undefined) => {
-  try {
-    await createResources(os);
-    await manageResources();
-  } catch (err) {
-    console.log(err);
+export const main = async (publisher: string, offer: string, sku: string) => {
+  if (!publisher || !offer || !sku) {
+    throw new Error("Invalid arguments or missing arguments.");
   }
+
+  const result = await createResources(publisher, offer, sku);
+
+  return result;
 };
 
-export const createVm = async (os?: Os | undefined) => {
-  const test = await createResources(os);
-  return test;
+const deleteGroup = async () => {
+  console.log(
+    `Deleting the ressource group: ${resourceGroupName} ! Please wait...`
+  );
+  return await resourceClient.resourceGroups.beginDeleteAndWait(
+    resourceGroupName
+  );
 };
 
-// export const removeVm = async () => {
-//   const test = await createResources();
-//   return test;
-// };
+export const startDelete = async () => {
+  await deleteGroup();
+  console.log("Resources deleted successfully : " + resourceGroupName);
 
-const createResources = async (os?: Os | undefined) => {
+  resourceGroupName = _generateRandomId("diberry-testrg", randomIds);
+  vmName = _generateRandomId("testvm", randomIds);
+  storageAccountName = _generateRandomId("testac", randomIds);
+  vnetName = _generateRandomId("testvnet", randomIds);
+  subnetName = _generateRandomId("testsubnet", randomIds);
+  publicIPName = _generateRandomId("testpip", randomIds);
+  networkInterfaceName = _generateRandomId("testnic", randomIds);
+  ipConfigName = _generateRandomId("testcrpip", randomIds);
+  domainNameLabel = _generateRandomId("testdomainname", randomIds);
+  osDiskName = _generateRandomId("testosdisk", randomIds);
+};
+
+const createResources = async (
+  publisher: string,
+  offer: string,
+  sku: string
+) => {
   try {
     await createResourceGroup();
     await createStorageAccount();
     await createVnet();
+
     subnetInfo = await getSubnetInfo();
     publicIPInfo = await createPublicIP();
     nicInfo = await createNIC(subnetInfo, publicIPInfo);
 
-    vmImageInfo = await findVMImage();
-    await createVirtualMachine(nicInfo.id, vmImageInfo[0].name, os);
+    vmImageInfo = await findVMImage(publisher, offer, sku);
+
+    await createVirtualMachine(
+      nicInfo.id,
+      vmImageInfo[0].name,
+      publisher,
+      offer,
+      sku
+    );
     return publicIPInfo.dnsSettings.fqdn;
   } catch (err) {
     console.log(err);
@@ -192,7 +214,7 @@ const createNIC = async (subnetInfo: any, publicIPInfo: any) => {
   );
 };
 
-const findVMImage = async () => {
+const findVMImage = async (publisher: string, offer: string, sku: string) => {
   console.log(
     util.format(
       "\nFinding a VM Image for location %s from " +
@@ -215,7 +237,9 @@ const findVMImage = async () => {
 const createVirtualMachine = async (
   nicId: string,
   vmImageVersionNumber: string,
-  os?: Os | undefined
+  publisher: string,
+  offer: string,
+  sku: string
 ) => {
   const vmParameters: VirtualMachine = {
     location: location,
@@ -230,8 +254,8 @@ const createVirtualMachine = async (
     storageProfile: {
       imageReference: {
         publisher: publisher,
-        offer: os ? os.os : offer,
-        sku: os ? os.version : sku,
+        offer: offer,
+        sku: sku,
         version: vmImageVersionNumber,
       },
       osDisk: {
@@ -264,43 +288,6 @@ const createVirtualMachine = async (
     vmName,
     vmParameters
   );
-};
-
-const manageResources = async () => {
-  await getVirtualMachines();
-  await turnOffVirtualMachines();
-  await startVirtualMachines();
-  await listVirtualMachines();
-};
-
-const getVirtualMachines = async () => {
-  console.log(`Get VM Info about ${vmName}`);
-  return await computeClient.virtualMachines.get(resourceGroupName, vmName);
-};
-
-const turnOffVirtualMachines = async () => {
-  console.log(`Poweroff the VM ${vmName}`);
-  return await computeClient.virtualMachines.beginPowerOff(
-    resourceGroupName,
-    vmName
-  );
-};
-
-const startVirtualMachines = async () => {
-  console.log(`Start the VM ${vmName}`);
-  return await computeClient.virtualMachines.beginStart(
-    resourceGroupName,
-    vmName
-  );
-};
-
-const listVirtualMachines = async () => {
-  console.log(`Lists VMs`);
-  const result = new Array();
-  for await (const item of computeClient.virtualMachines.listAll()) {
-    result.push(item);
-  }
-  return result;
 };
 
 function _generateRandomId(

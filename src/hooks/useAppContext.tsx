@@ -6,19 +6,23 @@ const AppContext = createContext<AppContextType>(null);
 type AppContextType = {
   isDialogOpen: boolean;
   contentDialog: string;
-  setDialog: (content: string, time: number) => void;
+  colorDialog: string;
+  setDialog: (content: string, color: string, time: number) => void;
 } | null;
 
 export default function AppAuth({ children }: { children: React.ReactNode }) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [contentDialog, setContentDialog] = useState<string>("");
+  const [colorDialog, setColorDialog] = useState<string>("");
 
-  const setDialog = (content: string, time: number) => {
+  const setDialog = (content: string, color: string, time: number) => {
     setContentDialog(content);
+    setColorDialog(color);
     setIsDialogOpen(true);
 
     setTimeout(() => {
       setContentDialog("");
+      setColorDialog("");
       setIsDialogOpen(false);
     }, time);
   };
@@ -26,6 +30,7 @@ export default function AppAuth({ children }: { children: React.ReactNode }) {
   const AppContextValue: AppContextType = {
     isDialogOpen,
     contentDialog,
+    colorDialog,
     setDialog,
   };
 

@@ -13,7 +13,7 @@ export default function LoginForm() {
     try {
       await connection(username, password);
       setError("");
-      setDialog("Connexion réussie !", 3000);
+      setDialog("Connexion réussie !", "green", 3000);
     } catch (error: any) {
       setError(error.message);
     }

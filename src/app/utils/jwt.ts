@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export const generateToken = async (payload: any) => {
   return sign(payload, process.env.JWT_SECRET || "", {
-    expiresIn: "1h",
+    expiresIn: "2h",
   });
 };
 
@@ -29,6 +29,11 @@ export async function getValueByToken(token: string) {
   const tokenFetch = cookies().get(token);
 
   if (tokenFetch) {
-    return await verifyToken(tokenFetch?.value);
+    const decodedToken = await verifyToken(tokenFetch?.value);
+
+    if (decodedToken instanceof Error) {
+      return null;
+    }
+    return decodedToken;
   }
 }
