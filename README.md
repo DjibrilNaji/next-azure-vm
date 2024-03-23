@@ -3,9 +3,9 @@
 ## Description
 
 Ce projet a pour but de pouvoir créer des machines virtuelles jetables sur le portail Azure depuis une application web.
-Lorsque l'utilisateur créer sa machine, il reçoit des informations de connexion RDP ou SSH.
+Lorsque l'utilisateur crée sa machine, il reçoit des informations de connexion RDP ou SSH.
 
-Il existe plusieurs utilisateurs avec des rôles différents, ce qui leur permettra de lancer différentes machines virtuelles.
+Il existe plusieurs utilisateurs ayant des rôles différents, ce qui leur permet de lancer différentes machines virtuelles.
 
 ## Installation du projet
 
@@ -42,7 +42,7 @@ Afin de récupérer les valeurs suivantes <span style="color: #FF0000">AZURE_CLI
 
 > Le secret --> **AZURE_CLIENT_SECRET**
 
-6. Ensuitre rendez vous sur "Vue d'ensemble" de votre application et récupérez y les valeurs suivantes :
+6. Ensuite, rendez-vous sur "Vue d'ensemble" de votre application et récupérez-y les valeurs suivantes :
 
 > ID d'application (client) --> **AZURE_CLIENT_ID**
 
@@ -176,4 +176,4 @@ Si aucune erreur n'est détécté, la VM, le groupe de ressource, etc... seront 
 
 # Démo :
 
-https://drive.google.com/file/d/1H8zpAj9SEDIhNDPl52ANhoETjLxVc4QJ/view?usp=sharing
+https://drive.google.com/file/d/1TqX67_SjjghACYoStp-NaqMEZoexY0xK/view?usp=sharing

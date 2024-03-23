@@ -70,7 +70,7 @@ export default function StartVM({
             <p className="flex text-white">Votre VM est en cours de création</p>
           </div>
           <p className="flex text-white text-center max-w-96">
-            Ne vous déconnecté pas pour ne pas perdre les informations de
+            Ne vous déconnectez pas pour ne pas perdre les informations de
             connexion pour votre VM.
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function StartVM({
         </div>
       ) : user?.role === roles.VIEWER ? (
         <p className="text-white">
-          Vous n&apos;avez aucun crédit pour démarrer une VM
+          Vous n&apos;avez aucun crédit pour démarrer une VM.
         </p>
       ) : user?.role === roles.EDITOR ? (
         <VmCard vm={vms[0]} lauchVmCreation={lauchVmCreation} />
