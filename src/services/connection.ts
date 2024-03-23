@@ -1,7 +1,7 @@
 "use server";
-import { getUser } from "@/app/utils/getUser";
-import { generateToken } from "@/app/utils/jwt";
-import { routes } from "@/app/utils/routes";
+import { getUser } from "@/utils/getUser";
+import { generateToken } from "@/utils/jwt";
+import { routes } from "@/utils/routes";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { main } from "./manage-vm";
@@ -28,8 +28,8 @@ export async function logout() {
   redirect(routes.home());
 }
 
-export async function checkAuth() {
-  const token = cookies().get("token");
+export async function checkAuth(cookieName: string) {
+  const token = cookies().get(cookieName);
 
   if (!token) {
     redirect(routes.home());

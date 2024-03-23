@@ -1,15 +1,10 @@
-import Logout from "@/app/components/Auth/Logout";
-import StartVM from "@/app/components/StartVM";
-import { getToken, getValueByToken } from "@/app/utils/jwt";
-import { routes } from "@/app/utils/routes";
-import { redirect } from "next/navigation";
+import Logout from "@/components/Auth/Logout";
+import StartVM from "@/components/StartVM";
+import { checkAuth } from "@/services/connection";
+import { getValueByToken } from "@/utils/jwt";
 
 export default async function Admin() {
-  const token = await getToken("token");
-
-  if (!token) {
-    redirect(routes.home());
-  }
+  await checkAuth("token");
 
   const user = await getValueByToken("token");
 

@@ -1,16 +1,17 @@
 "use client";
+import { vms } from "@/data/vms";
 import { useAppContext } from "@/hooks/useAppContext";
 import { createCookie, createVM, deleteCookie } from "@/services/connection";
 import { startDelete } from "@/services/manage-vm";
 import { useState } from "react";
-import { FaSpinner } from "react-icons/fa";
-import vms from "../../../public/datas/vms.json";
+import { ImSpinner9 } from "react-icons/im";
 import { roles } from "../data/roles";
 import { tokenStatus } from "../data/tokenStatus";
 import { User, VmAddressToken } from "../models/User";
 import { Vm } from "../models/Vm";
 import VmCard from "./VM/VmCard";
 import VmField from "./VM/VmField";
+
 export default function StartVM({
   user,
   vmAddressToken,
@@ -21,41 +22,43 @@ export default function StartVM({
   const [vmAddress, setVmAddress] = useState<VmAddressToken>(vmAddressToken);
   const { setDialog } = useAppContext();
 
+  const createCookieAndSetAddress = async (
+    value: VmAddressToken,
+    deleteVm: boolean = false
+  ) => {
+    await createCookie("vmAddressToken", value);
+    setVmAddress(value);
+
+    if (deleteVm) {
+      await startDelete();
+      await deleteCookie("vmAddressToken");
+
+      setVmAddress({} as VmAddressToken);
+      setDialog("La Vm a bien été supprimée", "red", 4000);
+    }
+  };
+
   const lauchVmCreation = async (vm: Vm, wds: boolean = false) => {
-    await createCookie("vmAddressToken", { status: tokenStatus.WAITING });
-    setVmAddress({ status: tokenStatus.WAITING });
+    await createCookieAndSetAddress({ status: tokenStatus.WAITING });
 
     const getVmAddress = await createVM(vm.publisher, vm.offer, vm.sku);
 
     if (!getVmAddress) {
-      await startDelete();
-      await deleteCookie("vmAddressToken");
-      location.reload();
+      await createCookieAndSetAddress({ status: tokenStatus.ERROR }, true);
       return;
     }
 
-    await createCookie("vmAddressToken", {
-      address: getVmAddress,
-      status: tokenStatus.FINISH,
-    });
-
-    setVmAddress({
+    createCookieAndSetAddress({
       address: getVmAddress,
       status: tokenStatus.FINISH,
       wds,
     });
 
-    setTimeout(async () => {
-      await createCookie("vmAddressToken", {
-        status: tokenStatus.DELETING,
-      });
-      setVmAddress({
-        status: tokenStatus.DELETING,
-      });
-      await startDelete();
-      await deleteCookie("vmAddressToken");
-      location.reload();
+    const timeout = setTimeout(async () => {
+      await createCookieAndSetAddress({ status: tokenStatus.DELETING }, true);
     }, 10000);
+
+    return () => clearTimeout(timeout);
   };
 
   return (
@@ -63,7 +66,7 @@ export default function StartVM({
       {vmAddress?.status === tokenStatus.WAITING ? (
         <div className="flex flex-col justify-center items-center gap-10">
           <div className="flex gap-2 bg-green-500 text-white p-2 rounded w-fit">
-            <FaSpinner className="animate-spin h-6 w-6 mx-auto text-white" />
+            <ImSpinner9 className="animate-spin h-6 w-6 mx-auto text-white" />
             <p className="flex text-white">Votre VM est en cours de création</p>
           </div>
           <p className="flex text-white text-center max-w-96">
@@ -91,8 +94,7 @@ export default function StartVM({
           <VmField value="Pa$$w0rd92" id="password" title="Mot de passe" />
 
           <h2 className="text-center text-red-500 font-semibold">
-            La VM s&apos;autodétruira 10min après sa création et vous serez
-            deconnecté automatiquement
+            La VM s&apos;autodétruira 10min après sa création.
           </h2>
         </div>
       ) : vmAddress?.status === tokenStatus.DELETING ? (
@@ -103,10 +105,17 @@ export default function StartVM({
           <h2 className="text-center">
             La VM est donc en cours de suppression...
           </h2>
-          <p className="text-center text-sm text-red-500 font-semibold pt-10">
-            Vous pouvez vous déconnecter et vous reconnecter pour démarrer une
-            nouvelle VM ou attendre la fin de la suppression.
-          </p>
+          <ImSpinner9 className="animate-spin h-6 w-6 mx-auto text-black" />
+        </div>
+      ) : vmAddress?.status === tokenStatus.ERROR ? (
+        <div className="flex flex-col bg-white px-10 py-8 rounded-xl gap-2">
+          <h1 className="text-center font-bold text-xl text-red-500">
+            Une erreur est survenue lors de la création de la VM.
+          </h1>
+          <h2 className="text-center pb-2">
+            Veuillez patienter... et réessayer
+          </h2>
+          <ImSpinner9 className="animate-spin h-6 w-6 mx-auto text-black" />
         </div>
       ) : user?.role === roles.VIEWER ? (
         <p className="text-white">

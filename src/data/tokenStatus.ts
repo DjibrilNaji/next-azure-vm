@@ -1,5 +1,6 @@
 export const tokenStatus = {
   WAITING: "Attente",
-  FINISH: "Finis",
+  FINISH: "Finish",
   DELETING: "Suppression",
+  ERROR: "Erreur",
 };

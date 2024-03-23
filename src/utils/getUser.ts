@@ -1,5 +1,5 @@
-import { User } from "@/app/models/User";
-import users from "../../../public/datas/users.json";
+import { users } from "@/data/users";
+import { User } from "@/models/User";
 
 export async function getUser(
   username: string,

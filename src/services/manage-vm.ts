@@ -5,13 +5,10 @@ import { ResourceManagementClient } from "@azure/arm-resources";
 import { StorageManagementClient } from "@azure/arm-storage";
 import { DefaultAzureCredential } from "@azure/identity";
 import * as util from "util";
+import { deleteCookie } from "./connection";
 
 // Store function output to be used elsewhere
 let randomIds: { [key: string]: string } = {};
-let subnetInfo: any = null;
-let publicIPInfo: any = null;
-let vmImageInfo: any = null;
-let nicInfo: any = null;
 
 //Random number generator for service names and settings
 let resourceGroupName = _generateRandomId("diberry-testrg", randomIds);
@@ -56,12 +53,32 @@ const networkClient = new NetworkManagementClient(credentials, subscriptionId);
 
 export const main = async (publisher: string, offer: string, sku: string) => {
   if (!publisher || !offer || !sku) {
-    throw new Error("Invalid arguments or missing arguments.");
+    throw new Error(
+      "Invalid arguments or missing arguments. Please try again."
+    );
   }
 
-  const result = await createResources(publisher, offer, sku);
+  resourceGroupName = _generateRandomId("diberry-testrg", randomIds);
+  vmName = _generateRandomId("testvm", randomIds);
+  storageAccountName = _generateRandomId("testac", randomIds);
+  vnetName = _generateRandomId("testvnet", randomIds);
+  subnetName = _generateRandomId("testsubnet", randomIds);
+  publicIPName = _generateRandomId("testpip", randomIds);
+  networkInterfaceName = _generateRandomId("testnic", randomIds);
+  ipConfigName = _generateRandomId("testcrpip", randomIds);
+  domainNameLabel = _generateRandomId("testdomainname", randomIds);
+  osDiskName = _generateRandomId("testosdisk", randomIds);
 
-  return result;
+  try {
+    const result = await createResources(publisher, offer, sku);
+
+    return result;
+  } catch (error) {
+    console.log(error);
+    await startDelete();
+    await deleteCookie("vmAddressToken");
+    return null;
+  }
 };
 
 const deleteGroup = async () => {
@@ -76,17 +93,6 @@ const deleteGroup = async () => {
 export const startDelete = async () => {
   await deleteGroup();
   console.log("Resources deleted successfully : " + resourceGroupName);
-
-  resourceGroupName = _generateRandomId("diberry-testrg", randomIds);
-  vmName = _generateRandomId("testvm", randomIds);
-  storageAccountName = _generateRandomId("testac", randomIds);
-  vnetName = _generateRandomId("testvnet", randomIds);
-  subnetName = _generateRandomId("testsubnet", randomIds);
-  publicIPName = _generateRandomId("testpip", randomIds);
-  networkInterfaceName = _generateRandomId("testnic", randomIds);
-  ipConfigName = _generateRandomId("testcrpip", randomIds);
-  domainNameLabel = _generateRandomId("testdomainname", randomIds);
-  osDiskName = _generateRandomId("testosdisk", randomIds);
 };
 
 const createResources = async (
@@ -99,11 +105,15 @@ const createResources = async (
     await createStorageAccount();
     await createVnet();
 
-    subnetInfo = await getSubnetInfo();
-    publicIPInfo = await createPublicIP();
-    nicInfo = await createNIC(subnetInfo, publicIPInfo);
+    const subnetInfo = await getSubnetInfo();
+    const publicIPInfo = await createPublicIP();
+    const nicInfo = await createNIC(subnetInfo, publicIPInfo);
 
-    vmImageInfo = await findVMImage(publisher, offer, sku);
+    const vmImageInfo = await findVMImage(publisher, offer, sku);
+
+    if (nicInfo.id === undefined) {
+      throw new Error("Erreur dans la création de l'interface réseau.");
+    }
 
     await createVirtualMachine(
       nicInfo.id,
@@ -112,6 +122,13 @@ const createResources = async (
       offer,
       sku
     );
+
+    if (!publicIPInfo.dnsSettings) {
+      throw new Error(
+        "Erreur dans la création de la machine virtuelle et de son groupe de ressource, veuillez réessayer."
+      );
+    }
+
     return publicIPInfo.dnsSettings.fqdn;
   } catch (err) {
     console.log(err);
@@ -260,13 +277,9 @@ const createVirtualMachine = async (
       },
       osDisk: {
         name: osDiskName,
-        caching: "None",
         createOption: "fromImage",
-        vhd: {
-          uri:
-            "https://" +
-            storageAccountName +
-            ".blob.core.windows.net/nodejscontainer/osnodejslinux.vhd",
+        managedDisk: {
+          storageAccountType: "Standard_LRS",
         },
       },
     },

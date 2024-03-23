@@ -1,4 +1,4 @@
-import { Vm } from "@/app/models/Vm";
+import { Vm } from "@/models/Vm";
 import Image from "next/image";
 
 export default function VmCard({

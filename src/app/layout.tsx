@@ -1,7 +1,7 @@
 import AppAuth from "@/hooks/useAppContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Dialog from "./components/Utils/Dialog";
+import Dialog from "../components/Utils/Dialog";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
