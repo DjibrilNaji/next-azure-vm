@@ -37,7 +37,9 @@ const secret = process.env.AZURE_CLIENT_SECRET;
 const subscriptionId = process.env.AZURE_SUBSCRIPTION_ID;
 
 if (!tenantId || !clientId || !secret || !subscriptionId) {
-  throw new Error("Default credentials couldn't be found");
+  throw new Error(
+    "Default credentials couldn't be found. The tenantId, clientId, secret and subscriptionId are required."
+  );
 }
 
 const credentials = new ClientSecretCredential(tenantId, clientId, secret);
