@@ -2,6 +2,11 @@
 
 ## Description
 
+Ce projet a pour but de pouvoir créer des machines virtuelles jetables sur le portail Azure depuis une application web.
+Lorsque l'utilisateur créer sa machine, il reçoit des informations de connexion RDP ou SSH.
+
+Il existe plusieurs utilisateurs avec des rôles différents, ce qui leur permettra de lancer différentes machines virtuelles.
+
 ## Installation du projet
 
 Commencez par créer et remplir le fichier `.env` avec les configurations Azure nécessaires :
