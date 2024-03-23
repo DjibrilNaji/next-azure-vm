@@ -82,16 +82,32 @@ export default function StartVM({
             Pour accéder à la VM
           </h1>
 
+          {vmAddress.wds && (
+            <VmField
+              value={vmAddress.address || ""}
+              id="windowsName"
+              title="Valeur a mettre dans PC Name"
+            />
+          )}
+
           <VmField
-            value={
-              (vmAddress.wds ? "rdp " : "ssh ") +
-              "notadmin@" +
-              vmAddress.address
-            }
+            value={vmAddress.wds ? "notadmin" : "ssh " + vmAddress.address}
             id="address"
-            title="Commande"
+            title={
+              vmAddress.wds
+                ? "Valeur a mettre dans 'Nom d'utilisateur'"
+                : "Commande pour se connecter en SSH"
+            }
           />
-          <VmField value="Pa$$w0rd92" id="password" title="Mot de passe" />
+          <VmField
+            value="Pa$$w0rd92"
+            id="password"
+            title={
+              vmAddress.wds
+                ? "Valeur a mettre dans 'Mot de passe'"
+                : "Mot de passe"
+            }
+          />
 
           <h2 className="text-center text-red-500 font-semibold">
             La VM s&apos;autodétruira 10min après sa création.
