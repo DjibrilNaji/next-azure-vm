@@ -3,7 +3,7 @@ import { ComputeManagementClient, VirtualMachine } from "@azure/arm-compute";
 import { NetworkManagementClient } from "@azure/arm-network";
 import { ResourceManagementClient } from "@azure/arm-resources";
 import { StorageManagementClient } from "@azure/arm-storage";
-import { DefaultAzureCredential } from "@azure/identity";
+import { ClientSecretCredential } from "@azure/identity";
 import * as util from "util";
 import { deleteCookie } from "./connection";
 
@@ -31,16 +31,16 @@ const adminUsername = "notadmin";
 const adminPassword = "Pa$$w0rd92";
 
 // Azure platform authentication
-// const clientId = process.env.AZURE_CLIENT_ID;
-// const domain = process.env.AZURE_TENANT_ID;
-// const secret = process.env.AZURE_CLIENT_SECRET;
+const tenantId = process.env.AZURE_TENANT_ID;
+const clientId = process.env.AZURE_CLIENT_ID;
+const secret = process.env.AZURE_CLIENT_SECRET;
 const subscriptionId = process.env.AZURE_SUBSCRIPTION_ID;
 
-if (!subscriptionId) {
+if (!tenantId || !clientId || !secret || !subscriptionId) {
   throw new Error("Default credentials couldn't be found");
 }
 
-const credentials = new DefaultAzureCredential();
+const credentials = new ClientSecretCredential(tenantId, clientId, secret);
 
 // Azure services
 const resourceClient = new ResourceManagementClient(

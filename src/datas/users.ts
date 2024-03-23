@@ -1,16 +1,16 @@
 export const users = [
   {
-    username: "Djibril",
+    username: "Admin",
     password: "admin",
     role: "admin",
   },
   {
-    username: "Adam",
+    username: "Editor",
     password: "editor",
     role: "editor",
   },
   {
-    username: "Louis",
+    username: "Viewer",
     password: "viewer",
     role: "viewer",
   },

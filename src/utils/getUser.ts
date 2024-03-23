@@ -1,4 +1,4 @@
-import { users } from "@/data/users";
+import { users } from "@/datas/users";
 import { User } from "@/models/User";
 
 export async function getUser(

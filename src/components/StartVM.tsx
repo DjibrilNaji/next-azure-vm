@@ -1,12 +1,12 @@
 "use client";
-import { vms } from "@/data/vms";
+import { vms } from "@/datas/vms";
 import { useAppContext } from "@/hooks/useAppContext";
 import { createCookie, createVM, deleteCookie } from "@/services/connection";
 import { startDelete } from "@/services/manage-vm";
 import { useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
-import { roles } from "../data/roles";
-import { tokenStatus } from "../data/tokenStatus";
+import { roles } from "../datas/roles";
+import { tokenStatus } from "../datas/tokenStatus";
 import { User, VmAddressToken } from "../models/User";
 import { Vm } from "../models/Vm";
 import VmCard from "./VM/VmCard";
@@ -56,7 +56,7 @@ export default function StartVM({
 
     const timeout = setTimeout(async () => {
       await createCookieAndSetAddress({ status: tokenStatus.DELETING }, true);
-    }, 10000);
+    }, 600000);
 
     return () => clearTimeout(timeout);
   };
