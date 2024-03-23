@@ -168,3 +168,7 @@ Si aucune erreur n'est détécté, la VM, le groupe de ressource, etc... seront 
 > - La suppression se fait 10 minutes après sa création mais elle n'est pas instantanée. Il faudra aussi attendre 2-3 minutes avant qu'elle soit totalement supprimé.
 
 > - Si vous avez déjà atteint le nombre maximum de machines virtuelles que votre compte peut supporter, il sera inutile de tenter d'en créer une nouvelle.
+
+# Démo :
+
+https://drive.google.com/file/d/1H8zpAj9SEDIhNDPl52ANhoETjLxVc4QJ/view?usp=sharing

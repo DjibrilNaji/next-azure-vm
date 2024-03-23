@@ -91,7 +91,9 @@ export default function StartVM({
           )}
 
           <VmField
-            value={vmAddress.wds ? "notadmin" : "ssh " + vmAddress.address}
+            value={
+              vmAddress.wds ? "notadmin" : "ssh notadmin@" + vmAddress.address
+            }
             id="address"
             title={
               vmAddress.wds
