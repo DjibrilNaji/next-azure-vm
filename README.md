@@ -1,15 +1,15 @@
-# PROJET VM AZURE NEXT
+# AZURE VM NEXT PROJECT
 
 ## Description
 
-Ce projet a pour but de pouvoir créer des machines virtuelles jetables sur le portail Azure depuis une application web.
-Lorsque l'utilisateur crée sa machine, il reçoit des informations de connexion RDP ou SSH.
+This project aims to enable the creation of disposable virtual machines on the Azure portal via a web application.  
+When a user creates a VM, they receive RDP or SSH connection details.
 
-Il existe plusieurs utilisateurs ayant des rôles différents, ce qui leur permet de lancer différentes machines virtuelles.
+There are multiple users with different roles, allowing them to launch various virtual machines.
 
-## Installation du projet
+## Project Setup
 
-Commencez par créer et remplir le fichier `.env` avec les configurations Azure nécessaires :
+Start by creating and populating the `.env` file with the required Azure configuration:
 
 ```bash
 ## Config Azure
@@ -20,37 +20,37 @@ AZURE_CLIENT_SECRET=''
 AZURE_SUBSCRIPTION_ID=''
 ```
 
-### Pour le faire il faudra se rendre sur le portail Azure et s'y connecter
+### To do this, you need to go to the Azure portal and log in
 
-Afin de récupérer la valeur <span style="color: #FF0000">AZURE_SUBSCRIPTION_ID</span> :
+To retrieve the value <span style="color: #FF0000">AZURE_SUBSCRIPTION_ID</span>:
 
-1. Dans la barre de recherche, tapez "Abonnements" et sélectionnez cette option.
-2. Choisissez l'abonnement que vous souhaitez utiliser.
-3. Récupérer l'ID de l'abonnement
+1. In the search bar, type **"Subscriptions"** and select this option.
+2. Choose the subscription you want to use.
+3. Copy the Subscription ID.
 
-> ID de l'abonnement --> **AZURE_SUBSCRIPTION_ID**
-
----
-
-Afin de récupérer les valeurs suivantes <span style="color: #FF0000">AZURE_CLIENT_ID // AZURE_CLIENT_SECRET // AZURE_TENANT_ID</span> :
-
-1. Dans la barre de recherche du portail Azure, tapez "Inscriptions d'applications".
-2. Sélectionnez "Nouvelle inscription".
-3. Configurez votre application et cliquez sur "S'inscrire".
-4. Une fois dans votre application, accédez à "Certificats et secrets", puis "Nouveau secret client".
-5. Assurez-vous de noter le secret lors de sa création.
-
-> Le secret --> **AZURE_CLIENT_SECRET**
-
-6. Ensuite, rendez-vous sur "Vue d'ensemble" de votre application et récupérez-y les valeurs suivantes :
-
-> ID d'application (client) --> **AZURE_CLIENT_ID**
-
-> ID de l'annuaire (locataire) --> **AZURE_TENANT_ID**
+> Subscription ID --> **AZURE_SUBSCRIPTION_ID**
 
 ---
 
-### Pour lancer le projet **manuellement** :
+To retrieve the following values <span style="color: #FF0000">AZURE_CLIENT_ID // AZURE_CLIENT_SECRET // AZURE_TENANT_ID</span>:
+
+1. In the Azure portal search bar, type **"App registrations"**.
+2. Select **"New registration"**.
+3. Configure your application and click **"Register"**.
+4. Once inside your app registration, go to **"Certificates & secrets"**, then click **"New client secret"**.
+5. Make sure to copy the secret at the moment of creation.
+
+> Secret --> **AZURE_CLIENT_SECRET**
+
+6. Then, go to the **"Overview"** page of your app registration and copy the following:
+
+> Application (client) ID --> **AZURE_CLIENT_ID**
+
+> Directory (tenant) ID --> **AZURE_TENANT_ID**
+
+---
+
+### To run the project **manually**:
 
 ```bash
 npm install
@@ -60,119 +60,118 @@ npm install
 npm run dev
 ```
 
-Votre serveur sera en marche sur :
+Your server will be running at:
 
 > http://localhost:3000
 
-## Connexion
+## Login
 
-Les 3 comptes utilisateurs déjà créés sont :
+The 3 pre-created user accounts are:
 
-- **L'utilisateur qui peut choisir sa VM** :
-  - _Login_ : **Admin**
-  - _Password_ : **admin**
-- **L'utilisateur qui peut lancer sa VM préselectionné** :
-  - _Login_ : **Editor**
-  - _Password_ :**editor**
-- **L'utilisateur n'ayant aucun crédit**
-  - _Login_ : **Viewer**
-  - _Password_ : **viewer**
+- **User who can choose their VM**:  
+  - _Login_: **Admin**  
+  - _Password_: **admin**
 
-## Pour se connecter aux VMS
+- **User who can launch a pre-selected VM**:  
+  - _Login_: **Editor**  
+  - _Password_: **editor**
 
-Pour ce projet, nous avons deux types de machines : les machines Windows et les machines Unix.
+- **User with no credit**:  
+  - _Login_: **Viewer**  
+  - _Password_: **viewer**
 
-### Pour les machines Windows :
+## Connecting to the VMs
 
-Pour vous connecter à une machine Windows, vous devrez utiliser RDP (Remote Desktop Protocol). Vous avez deux options :
+This project supports two types of machines: Windows machines and Unix machines.
 
-> 1.  **Installer l'application "Microsoft Remote Desktop" disponible sur l'Apple Store.**
+### For Windows machines:
 
-Pour vous connecter, récupérez l'URL à mettre dans la partie "PC Name" de l'application. Lorsque vous tenterez de vous connecter, un nom d'utilisateur et un mot de passe vous seront demandés. Assurez-vous de les renseigner également.
+To connect to a Windows machine, you will need to use RDP (Remote Desktop Protocol). You have two options:
 
-N'oubliez pas de sélectionner "Ask when required" au début.
+> 1. **Install the "Microsoft Remote Desktop" app available on the Apple Store.**
 
-> 2. **Utiliser FreeRDP, un client open-source.**
+Use the URL provided to fill in the "PC Name" field in the app. When connecting, you will be asked for a username and password. Make sure to enter those as well.
 
-### Pour les machines Unix
+Don’t forget to select "Ask when required" at the start.
 
-Une commande s'affichera à l'écran. Il vous suffira de la copier et de la coller dans votre terminal. Un mot de passe vous sera demandé, assurez-vous de récupérer celui également affiché à l'écran.
+> 2. **Use FreeRDP, an open-source client.**
 
-##### Il est possible que lorsque vous tenterez de vous connecter, une erreur "Permission denied" apparaisse. Il suffira seulement d'attendre quelques secondes avant que cela fonctionne.
+### For Unix machines:
 
-## Stack Utilisée
+A command will be displayed on screen. Simply copy and paste it into your terminal. A password will be requested; make sure to copy it as well.
 
-Voici les principaux composants de notre stack :
+##### Note: If you get a "Permission denied" error when trying to connect, just wait a few seconds and try again.
 
-### Framework et Langage
+## Technology Stack
 
-- **Next.js avec TypeScript :** Next.js est utilisé comme framework de développement front-end. TypeScript est intégré pour améliorer la maintenabilité et la robustesse du code.
+Here are the main components of our stack:
 
-### Styles
+### Framework & Language
 
-- **Tailwind CSS :** J'utilise Tailwind CSS comme framework CSS pour faciliter le développement et la personnalisation des styles.
+- **Next.js with TypeScript:** Next.js is used as the front-end framework. TypeScript is integrated for better code maintainability and robustness.
 
-### Gestion des icônes
+### Styling
 
-- **React Icons :** Pour l'intégration facile d'icônes dans notre application, j'utilise React Icons.
+- **Tailwind CSS:** Tailwind CSS is used as the CSS framework to simplify styling and customization.
 
-### Authentification
+### Icon Management
 
-- **jsonwebtoken :** Pour la gestion des tokens (JWT), j'utilise la bibliothèque jsonwebtoken. Elle permet de sécuriser les communications et de gérer l'authentification des utilisateurs de manière sécurisée.
+- **React Icons:** Used for easy integration of icons in the app.
 
-### Intégration avec les services cloud
+### Authentication
 
-- **Azure SDK :** Pour l'intégration avec les services Azure, nous utilisons l'Azure SDK.
+- **jsonwebtoken:** Used to manage JWT tokens, securing communication and handling user authentication securely.
 
-## Organisation du Code Source
+### Cloud Integration
 
-Le code source de notre application est soigneusement organisé pour favoriser la lisibilité, la maintenabilité et la réutilisabilité. Voici comment nous structurons nos dossiers principaux :
+- **Azure SDK:** Used for interacting with Azure services.
 
-### Dossiers Principaux
+## Source Code Structure
 
-- **`app`:** Ce dossier contient les routes de notre projet.
+The source code is carefully organized to promote readability, maintainability, and reusability. Here is the main folder structure:
 
-- **`components`:** Les composants réutilisables de notre application sont regroupés ici. Chaque composant est soigneusement conçu pour être autonome et réutilisable, ce qui facilite le développement et la maintenance de l'application.
+### Main Folders
 
-- **`datas`:** Ce dossier contient les données statiques utilisées dans l'application (Users, Vms...).
+- **`app`:** Contains the routes of the project.
 
-- **`hooks`:** Les hooks personnalisés utilisés dans notre application sont regroupés ici. Les hooks sont des fonctions qui nous permettent de réutiliser la logique d'état et de cycle de vie entre les composants de manière efficace.
+- **`components`:** Reusable components are grouped here. Each component is designed to be standalone and reusable, easing development and maintenance.
 
-- **`models`:** Les modèles de données de notre application sont définis dans ce dossier. Ces modèles fournissent une structure claire pour les données manipulées par l'application.
+- **`datas`:** Contains static data used in the app (Users, VMs, etc.).
 
-- **`services`:** Ce dossier contient les services utilisés pour interagir avec des API externes ou d'autres services. Il peut inclure des fonctions d'authentification, des clients API, des services de stockage, etc.
+- **`hooks`:** Custom React hooks used in the app.
 
-- **`utils`:** Les utilitaires et les fonctions utilitaires sont regroupés dans ce dossier. Cela peut inclure des fonctions de manipulation de chaînes, des fonctions de formatage de dates, des fonctions d'utilité générale, etc.
+- **`models`:** Data models defining the structure of data handled by the app.
 
-## Gestion des VMs
+- **`services`:** Services interacting with external APIs or other services (auth functions, API clients, storage services, etc.).
 
-La gestion des vms a été faite depuis un fichier que j'ai récupérer de Github : [Sample Azure](https://github.com/Azure-Samples/js-e2e/blob/main/resources/virtual-machines/create-vm.js).
-Il s'agit d'un sample fait par Microsoft Azure.
+- **`utils`:** Utility functions (string manipulation, date formatting, general helpers).
 
-La création de la machine virtuelle débute lorsque l'utilisateur a cliqué sur le bouton **`Démarrer`** présent sur la page.
+## VM Management
 
-6 étapes sont lancés avant la création totale de la machine virtuelle.
+The VM management logic is based on a sample file taken from GitHub: [Sample Azure](https://github.com/Azure-Samples/js-e2e/blob/main/resources/virtual-machines/create-vm.js), a Microsoft Azure sample.
 
-#### Création :
+VM creation starts when the user clicks the **`Start`** button on the page.
 
-- du groupe de ressource
-- du compte de stockage
-- de vnet (réseau virtuel...)
-- d'une IP publique
-- de l'interface réseau
-- de la machine virtuelle
+Six steps are executed before the VM is fully created:
 
-Si une erreur survient, la suppression se fera automatiquement après la capture de l'erreur.
+- Resource group creation  
+- Storage account creation  
+- VNet (virtual network) creation  
+- Public IP creation  
+- Network interface creation  
+- Virtual machine creation  
 
-Si aucune erreur n'est détécté, la VM, le groupe de ressource, etc... seront supprimés automatiquement après 10 min de vie.
+If an error occurs, the resources are automatically cleaned up after the error is caught.
 
-> À savoir :
+If no error is detected, the VM, resource group, and related resources are automatically deleted after 10 minutes of uptime.
 
-> - La création de la machine virtuelle prend quelques minutes (2-3min)
+> Notes:
 
-> - La suppression se fait 10 minutes après sa création mais elle n'est pas instantanée. Il faudra aussi attendre 2-3 minutes avant qu'elle soit totalement supprimé.
+> - VM creation takes a few minutes (2-3 min)
 
-> - Si vous avez déjà atteint le nombre maximum de machines virtuelles que votre compte peut supporter, il sera inutile de tenter d'en créer une nouvelle.
+> - Deletion happens 10 minutes after creation but is not instantaneous; expect 2-3 minutes for full cleanup.
+
+> - If you have reached the maximum number of VMs your account supports, creating a new one will not be possible.
 
 # Démo :
 
